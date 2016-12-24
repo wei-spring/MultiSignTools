@@ -1,0 +1,92 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<GridPane fx:controller="com.edaixi.signtool.Controller"
+          fx:id="homeRoot"
+          xmlns:fx="http://javafx.com/fxml" maxHeight="Infinity" maxWidth="Infinity"
+          hgap="10"
+          vgap="10">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <Text text="请填写下列信息:"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"
+          GridPane.columnSpan="2"/>
+
+    <Label text="APK安装包路径:"
+           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="50" alignment="top_left">
+
+        <TextField fx:id="apkFileDir" prefWidth="450"/>
+
+        <Button text="..."
+                onAction="#selectApkFilePath"/>
+    </HBox>
+
+    <Label text="渠道文件路径:"
+           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="50" alignment="top_left">
+
+        <TextField fx:id="channelFileDir" prefWidth="450"/>
+
+        <Button text="..."
+                onAction="#selectChannelFilePath"/>
+    </HBox>
+
+
+
+    <Label text="KeyStore路径:"
+           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="50" alignment="top_left">
+
+        <TextField fx:id="keystoreDir" prefWidth="450"/>
+
+        <Button text="..."
+                onAction="#selectKeyStoreFilePath"/>
+    </HBox>
+
+    <Label text="Alias:"
+           GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.columnSpan="50" alignment="top_left">
+
+        <TextField fx:id="aliasName" prefWidth="450"/>
+
+    </HBox>
+
+
+    <Label text="KeyStore密码:"
+           GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.columnSpan="50" alignment="top_left">
+
+        <PasswordField fx:id="keystorePWD" prefWidth="450"/>
+
+    </HBox>
+
+    <HBox spacing="10" alignment="bottom_left"
+          GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="50">
+        <Label text="打包签名进度:"/>
+        <ProgressBar fx:id="progressBar" prefWidth="305" progress="0.0" maxWidth="Infinity"></ProgressBar>
+        <Button text="签名"
+                onAction="#handleSignButtonAction"/>
+    </HBox>
+
+    <ListView fx:id="listLog" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.columnSpan="50"></ListView>
+
+</GridPane>
