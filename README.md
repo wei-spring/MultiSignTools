@@ -21,9 +21,13 @@
  > 关于打包界面的各个选项输入说明
 
  *Apk安装路径：*需要打多渠道包的Apk文件位置，可以选择，可以直接输入
+
  *KeyStore路径：*签名的keystore的路径
+
  *渠道文件路径：*该文件可以为.txt文件，里面输入渠道列表，渠道换行分开，读取时候会每行按一个渠道，进行打包，参见：img/channel.txt,同时也可以输入单个渠道，或者多个渠道，输入时候以英文,分割渠道，例如：BaiduZhuShou,MeiZuShiChang
+
  *标识文件前缀：*塞入空文件的前缀，为了读取方便，参见img/GetChannelTools.java里面读取逻辑，也即是CHANNEL_KEY。
+
  *Alias ,KeyStore密码就不用说了*
 
 
