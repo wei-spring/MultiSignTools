@@ -1,5 +1,6 @@
 package com.edaixi.signtool;
 
+import com.edaixi.signtool.bean.ApkSignInfo;
 import com.edaixi.signtool.bean.MultiSignWrapper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -50,11 +51,14 @@ public class Main extends Application {
             replaceSceneContent("/resources/multi_sign_tool_home.fxml");
             loadMultiSignWrapper = loadPersonDataFromFile(new File("multi_sign_info.xml"));
             if (loadMultiSignWrapper != null && controller != null) {
-                controller.setSignInfoText(loadMultiSignWrapper.getApkPath(),
-                        loadMultiSignWrapper.getChannelPath(),
-                        loadMultiSignWrapper.getkeystorePath(),
-                        loadMultiSignWrapper.getaliasString(),
-                        loadMultiSignWrapper.getkeystorePwd()
+                ApkSignInfo apkSignInfo = new ApkSignInfo();
+                apkSignInfo.setApkPath(loadMultiSignWrapper.getApkPath());
+                apkSignInfo.setKeystorePath(loadMultiSignWrapper.getkeystorePath());
+                apkSignInfo.setAliasString(loadMultiSignWrapper.getaliasString());
+                apkSignInfo.setEmpmtyFileString(loadMultiSignWrapper.getEmpmtyFileString());
+                apkSignInfo.setKeystorePwd(loadMultiSignWrapper.getkeystorePwd());
+                apkSignInfo.setChannelPath(loadMultiSignWrapper.getChannelPath());
+                controller.setSignInfoText(apkSignInfo
                 );
             }
         } catch (Exception ex) {
@@ -99,7 +103,7 @@ public class Main extends Application {
      * @return
      */
     public boolean userVerify(String userId, String password) {
-        if (userId.contains("@edaixi.com")) {
+        if (userId.contains(".com")) {
             loadMultiSignWrapper.setUserName(userId);
             loadMultiSignWrapper.setUserPwd(password);
             savePersonDataToFile(new File("multi_sign_info.xml"));
@@ -113,18 +117,15 @@ public class Main extends Application {
     /**
      * 本地序列化签名信息
      *
-     * @param apkPath
-     * @param channelPath
-     * @param keyStorePath
-     * @param alias
-     * @param keyPwd
+     * @param apkSignInfo
      */
-    public void saveApkSignInfo(String apkPath, String channelPath, String keyStorePath, String alias, String keyPwd) {
-        loadMultiSignWrapper.setApkPath(apkPath);
-        loadMultiSignWrapper.setChannelPath(channelPath);
-        loadMultiSignWrapper.setkeystorePath(keyStorePath);
-        loadMultiSignWrapper.setaliasString(alias);
-        loadMultiSignWrapper.setkeystorePwd(keyPwd);
+    public void saveApkSignInfo(ApkSignInfo apkSignInfo) {
+        loadMultiSignWrapper.setApkPath(apkSignInfo.getApkPath());
+        loadMultiSignWrapper.setChannelPath(apkSignInfo.getChannelPath());
+        loadMultiSignWrapper.setkeystorePath(apkSignInfo.getKeystorePath());
+        loadMultiSignWrapper.setaliasString(apkSignInfo.getAliasString());
+        loadMultiSignWrapper.setkeystorePwd(apkSignInfo.getKeystorePwd());
+        loadMultiSignWrapper.setEmpmtyFileString(apkSignInfo.getEmpmtyFileString());
         savePersonDataToFile(new File("multi_sign_info.xml"));
     }
 

@@ -81,6 +81,18 @@ public class MultiSignWrapper {
     }
 
 
+    private String empmtyFileString;
+
+    @XmlElement(name = "empmtyFileString")
+    public String getEmpmtyFileString() {
+        return empmtyFileString;
+    }
+
+    public void setEmpmtyFileString(String empmtyFileString) {
+        this.empmtyFileString = empmtyFileString;
+    }
+
+
     private String keystorePwd;
 
     @XmlElement(name = "keystorePwd")
@@ -101,6 +113,7 @@ public class MultiSignWrapper {
                 + "\nkeystorePath:" + keystorePath
                 + "\naliasString:" + aliasString
                 + "\nkeystorePwd:" + keystorePwd
+                + "\nempmtyFileString:" + empmtyFileString
                 ;
     }
 }

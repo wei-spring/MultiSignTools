@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="JavaFXApp.jnlp">
+  <information>
+    <title>e???????????</title>
+    <vendor>???</vendor>
+    <description>e???????????,??v1?v2??.</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="JavaFXApp.jar" size="35971" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="700" height="450" main-class="com.edaixi.signtool.Main"  name="MultiSignTool" />
+  <update check="background"/>
+</jnlp>

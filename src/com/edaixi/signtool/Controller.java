@@ -1,5 +1,6 @@
 package com.edaixi.signtool;
 
+import com.edaixi.signtool.bean.ApkSignInfo;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,6 +51,10 @@ public class Controller {
     private TextField aliasName;
     @FXML
     private PasswordField keystorePWD;
+    @FXML
+    private TextField emptyFileName;
+    @FXML
+    private ChoiceBox channelChoiceBox;
 
     public static final ObservableList showListLog =
             FXCollections.observableArrayList();
@@ -68,13 +73,14 @@ public class Controller {
     /**
      * 设置默认的签名信息
      */
-    public void setSignInfoText(String apkPath, String channelPath, String keyStorePath, String alias, String keyPwd) {
-        if (apkPath != null && apkFileDir != null) {
-            apkFileDir.setText(apkPath);
-            channelFileDir.setText(channelPath);
-            keystoreDir.setText(keyStorePath);
-            aliasName.setText(alias);
-            keystorePWD.setText(keyPwd);
+    public void setSignInfoText(ApkSignInfo apkSignInfo) {
+        if (apkSignInfo != null && apkFileDir != null) {
+            apkFileDir.setText(apkSignInfo.getApkPath());
+            channelFileDir.setText(apkSignInfo.getChannelPath());
+            keystoreDir.setText(apkSignInfo.getKeystorePath());
+            aliasName.setText(apkSignInfo.getAliasString());
+            keystorePWD.setText(apkSignInfo.getKeystorePwd());
+            emptyFileName.setText(apkSignInfo.getEmpmtyFileString());
         }
     }
 
@@ -142,6 +148,7 @@ public class Controller {
         String keystoreDirString = keystoreDir.getText();
         String aliasNameString = aliasName.getText();
         String keystorePWDString = keystorePWD.getText();
+        String emptyFileNameString = emptyFileName.getText();
 
         if (apkFileDirString == null || apkFileDirString.length() < 2) {
             AlertUtil.showAlert("温馨提示", "", "APK安装包路径不能为空.");
@@ -158,17 +165,26 @@ public class Controller {
         } else if (keystorePWDString == null || keystorePWDString.length() < 2) {
             AlertUtil.showAlert("温馨提示", "", "keyStore密码不能为空.");
             return;
+        } else if (emptyFileNameString == null || emptyFileNameString.length() < 2) {
+            AlertUtil.showAlert("温馨提示", "", "标识渠道文件前缀不能为空.");
+            return;
         }
+        ApkSignInfo apkSignInfo = new ApkSignInfo();
         try {
-            Main.getInstance().saveApkSignInfo(apkFileDirString, channelFileDirString, keystoreDirString, aliasNameString, keystorePWDString);
+            apkSignInfo.setApkPath(apkFileDirString);
+            apkSignInfo.setChannelPath(channelFileDirString);
+            apkSignInfo.setKeystorePath(keystoreDirString);
+            apkSignInfo.setAliasString(aliasNameString);
+            apkSignInfo.setKeystorePwd(keystorePWDString);
+            apkSignInfo.setEmpmtyFileString(emptyFileNameString);
+            Main.getInstance().saveApkSignInfo(apkSignInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         if (showListLog.size() > 1) showListLog.removeAll();
         showListLog.add("开始执行打包签名......开始执行打包签名\n");
         setTips(showListLog);
-        channelApkSign(apkFileDirString, channelFileDirString, keystoreDirString, aliasNameString, keystorePWDString);
+        channelApkSign(apkSignInfo);
     }
 
     /**
@@ -182,20 +198,14 @@ public class Controller {
 
     /**
      * 生成渠道包,并且重新签名
-     *
-     * @param apkPath
-     * @param channelPath
-     * @param keystorePath
-     * @param aliasStr
-     * @param keyPWD
      */
-    public void channelApkSign(String apkPath, String channelPath, String keystorePath, String aliasStr, String keyPWD) {
+    public void channelApkSign(ApkSignInfo apkSignInfo) {
         try {
-            File apkFile = new File(apkPath);
-            String[] lists = (System.getProperty("os.name").contains("Windows")) ? apkPath.split(File.separator + File.separator) : apkPath.split(File.separator);
+            File apkFile = new File(apkSignInfo.getApkPath());
+            String[] lists = (System.getProperty("os.name").contains("Windows")) ? apkSignInfo.getApkPath().split(File.separator + File.separator) : apkSignInfo.getApkPath().split(File.separator);
             String apkName = lists[lists.length - 1];
-            List<String> channelList = readFileByLines(channelPath);
-            String outputPath = makeOutputFile(apkPath);
+            List<String> channelList = readFileByLines(apkSignInfo.getChannelPath());
+            String outputPath = makeOutputFile(apkSignInfo.getApkPath());
             if (outputPath != null && channelList != null) {
                 Logger.getLogger(Controller.class.getName()).log(Level.INFO, "channelList:" + channelList.size(), "");
                 final Task<Void> task = new Task<Void>() {
@@ -209,11 +219,11 @@ public class Controller {
                             File channelApkFile = new File(outputPath + File.separator + apkName.replace(".apk", "") + "_" + channerStr + ".apk");
                             try {
                                 Files.copy(apkFile.toPath(), channelApkFile.toPath());
-                                addChannelFile(channelApkFile.getPath(), channerStr);
+                                addChannelFile(channelApkFile.getPath(), channerStr, apkSignInfo.getEmpmtyFileString());
                             } catch (IOException e) {
                             }
                             //执行重新签名逻辑
-                            signApk(keystorePath, aliasStr, keyPWD, channelApkFile.getAbsolutePath());
+                            signApk(apkSignInfo.getKeystorePath(), apkSignInfo.getAliasString(), apkSignInfo.getKeystorePwd(), channelApkFile.getAbsolutePath());
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
@@ -310,14 +320,14 @@ public class Controller {
      * @param channel
      */
     public static void addChannelFile(String zipFilePath,
-                                      String channel) {
+                                      String channel, String preChannel) {
         try {
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
             Path path = Paths.get(zipFilePath);
             URI uri = URI.create("jar:" + path.toUri());
             try (FileSystem fs = FileSystems.newFileSystem(uri, env)) {
-                Path nf = fs.getPath("META-INF/cztchannel_" + channel);
+                Path nf = fs.getPath("META-INF/" + preChannel + channel);
                 try (Writer writer = Files.newBufferedWriter(nf, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
                     writer.write("add_channel" + channel);
                 }
@@ -369,30 +379,41 @@ public class Controller {
      */
     private List<String> readFileByLines(String fileName) {
         List<String> channelList = new ArrayList<>();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-            String tempString = null;
-            int line = 1;
-            //一次读一行，读入null时文件结束
-            while ((tempString = reader.readLine()) != null) {
-                //把当前行号显示出来
-                System.out.println("渠道 " + line + ": " + tempString);
-                line++;
-                channelList.add(tempString.toString());
-            }
-            reader.close();
-            return channelList;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return channelList;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
+        if (fileName.contains("/") || fileName.contains(File.separator) || fileName.contains("\\")) {
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new FileReader(fileName));
+                String tempString = null;
+                int line = 1;
+                //一次读一行，读入null时文件结束
+                while ((tempString = reader.readLine()) != null) {
+                    //把当前行号显示出来
+                    //System.out.println("渠道文件 " + line + ": " + tempString);
+                    line++;
+                    channelList.add(tempString.toString());
                 }
+                reader.close();
+                return channelList;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return channelList;
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e1) {
+                    }
+                }
+                return channelList;
             }
+        } else if (fileName.contains(",") || fileName.contains(",")) {
+            String[] listStr = fileName.split(",");
+            for (String listItem : listStr) {
+                channelList.add(listItem);
+            }
+            return channelList;
+        } else {
+            channelList.add(fileName);
             return channelList;
         }
     }
