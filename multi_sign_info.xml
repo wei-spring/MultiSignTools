@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <multiInfo>
-    <apkPath>/Volumes/CoderFile/测试MultiSignTool/e袋洗_V5.3.0_20161221105449.apk</apkPath>
-    <channelPath>HelloSD,HiSB</channelPath>
-    <empmtyFileString>xxxxchannel_</empmtyFileString>
+    <apkPath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/e袋洗_V5.3.0_20161226160227.apk</apkPath>
+    <channelPath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/info/channel.txt</channelPath>
+    <empmtyFileString>cztchannel_</empmtyFileString>
     <userName>xxx@edaixi.com</userName>
     <userPwd>jjjjjj</userPwd>
-    <aliasString>xxxxxx</aliasString>
-    <keystorePath>/Volumes/CoderFile/测试MultiSignTool/edaixisign</keystorePath>
-    <keystorePwd>edaixi.com</keystorePwd>
+    <aliasString>jjjjjjj</aliasString>
+    <keystorePath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/edaixisign</keystorePath>
+    <keystorePwd>xxxxx</keystorePwd>
 </multiInfo>

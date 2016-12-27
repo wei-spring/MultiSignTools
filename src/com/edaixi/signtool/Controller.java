@@ -250,6 +250,8 @@ public class Controller {
                 progressBar.progressProperty().addListener(observable -> {
                     if (progressBar.getProgress() >= 1 - 0.0000005) {
                         progressBar.setStyle("-fx-accent: forestgreen;");
+                        //展示打包存储位置
+                        showOpenDialog(outputPath);
                     }
                 });
                 final Thread thread = new Thread(task, "task-thread");
@@ -262,6 +264,40 @@ public class Controller {
             e.printStackTrace();
             AlertUtil.showAlert("错误提示", "", "执行出错啦,请检查输入是否正确,确认输入无误后再联系开发解决.");
             return;
+        }
+    }
+
+
+    /**
+     * 弹出打包完成对话框
+     */
+    public void showOpenDialog(String apkPath) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("打包签名完毕");
+        alert.setHeaderText(null);
+        alert.setContentText("点击下面按钮,打开生成渠道包存放文件夹,或者点击关闭.");
+
+        ButtonType buttonTypeOne = new ButtonType("打开打包存放文件夹");
+        ButtonType buttonTypeCancel = new ButtonType("关闭", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne) {
+            String shpath;
+            if (System.getProperty("os.name").contains("Windows")) {
+                shpath = "start " + apkPath;
+            } else {
+                shpath = "open " + apkPath;
+            }
+            try {
+                Process ps = Runtime.getRuntime().exec(shpath);
+                ps.waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            alert.hide();
         }
     }
 
