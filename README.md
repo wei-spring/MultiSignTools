@@ -1,6 +1,6 @@
 # MultiSignTools
 
-> MultiSignTools是Android多渠道打包签名的一个可视化小工具，主要适用于网上比较常见的多渠道打包方式：在META-INF/目录下放一空文件标识渠道，然后运行时，读取文件名字，标识渠道。签名只支持常见的keystore签名，如果需要证书等信息时候，需要支持certificate参数，可以clone源码，自行修改.
+> MultiSignTools是Android多渠道打包签名的一个可视化小工具，主要适用于网上比较常见的多渠道打包方式：在META-INF/目录下放一空文件标识渠道，然后运行时，读取文件名字，标识渠道。支持Android 7.0+(已测)签名只支持常见的keystore签名，如果需要证书等信息时候，需要支持certificate参数，可以clone源码，自行修改.
 
 **软件使用环境：**
 * Windows操作系统(配置jdk环境)
