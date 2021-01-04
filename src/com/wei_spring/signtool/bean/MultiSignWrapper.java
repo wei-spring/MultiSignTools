@@ -1,12 +1,11 @@
-package com.edaixi.signtool.bean;
+package com.wei_spring.signtool.bean;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Created by wei_spring on 2016/12/23.
+ * Created by wei_spring on 2020/12/23.
  */
-
 @XmlRootElement(name = "multiInfo")
 public class MultiSignWrapper {
 

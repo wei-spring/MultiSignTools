@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <multiInfo>
-    <apkPath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/e袋洗_V5.3.0_20161226160227.apk</apkPath>
-    <channelPath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/info/channel.txt</channelPath>
-    <empmtyFileString>cztchannel_</empmtyFileString>
-    <userName>xxx@edaixi.com</userName>
-    <userPwd>jjjjjj</userPwd>
-    <aliasString>jjjjjjj</aliasString>
-    <keystorePath>/Volumes/CoderFile/工作天地/打包发布平台/EdaixiApkSignTool/edaixisign</keystorePath>
-    <keystorePwd>xxxxx</keystorePwd>
+    <apkPath>/Volumes/a.apk</apkPath>
+    <channelPath>/Volumes/info/channel.txt</channelPath>
+    <empmtyFileString>multichannel_</empmtyFileString>
+    <aliasString>alias</aliasString>
+    <keystorePath>/Volumes/keystore.jks</keystorePath>
+    <keystorePwd>pwd</keystorePwd>
 </multiInfo>

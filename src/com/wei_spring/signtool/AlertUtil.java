@@ -1,9 +1,9 @@
-package com.edaixi.signtool;
+package com.wei_spring.signtool;
 
 import javafx.scene.control.Alert;
 
 /**
- * Created by wei_spring on 2016/12/23.
+ * Created by wei_spring on 2020/12/23.
  * <p>
  * <a href="http://code.makery.ch/blog/javafx-dialogs-official/"> from </a>
  * <p>

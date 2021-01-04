@@ -1,11 +1,13 @@
-package com.edaixi.signtool;
+package com.wei_spring.signtool;
 
-import com.edaixi.signtool.bean.ApkSignInfo;
-import com.edaixi.signtool.bean.MultiSignWrapper;
+import com.wei_spring.signtool.bean.ApkSignInfo;
+import com.wei_spring.signtool.bean.MultiSignWrapper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 import javax.xml.bind.JAXBContext;
@@ -34,8 +36,20 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         try {
             singleStage = primaryStage;
-            primaryStage.setTitle("e袋洗多渠道打包签名工具");
-            gotoLogin();
+            primaryStage.setTitle("APK二次签名工具&多渠道打包");
+            //page
+            Tab tabHome = new Tab("首页");
+            tabHome.setContent(replaceSceneContent("/resources/multi_sign_tool_login.fxml"));
+            tabHome.setClosable(false);
+            Tab tabSecondSign = new Tab("二次签名");
+            tabSecondSign.setContent(replaceSceneContent("/resources/second_sign_tool_home.fxml"));
+            tabSecondSign.setClosable(false);
+            Tab tabMultiSign = new Tab("多渠道打包");
+            tabMultiSign.setContent(replaceSceneContent("/resources/multi_sign_tool_home.fxml"));
+            tabMultiSign.setClosable(false);
+            TabPane tabpane = new TabPane(tabHome, tabSecondSign, tabMultiSign);
+            Scene scene = new Scene(tabpane, 800, 530);
+            primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception ex) {
         }
@@ -46,7 +60,38 @@ public class Main extends Application {
         super.stop();
     }
 
-    private void gotoHome() {
+    private void gotoMenu() {
+        try {
+            replaceSceneContent("/resources/multi_sign_tool_login.fxml");
+            loadMultiSignWrapper = loadPersonDataFromFile(new File("multi_sign_info.xml"));
+            if (loadMultiSignWrapper != null && controller != null) {
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void gotoSecondHome() {
+        try {
+            replaceSceneContent("/resources/second_sign_tool_home.fxml");
+            loadMultiSignWrapper = loadPersonDataFromFile(new File("multi_sign_info.xml"));
+            if (loadMultiSignWrapper != null && controller != null) {
+                ApkSignInfo apkSignInfo = new ApkSignInfo();
+                apkSignInfo.setApkPath(loadMultiSignWrapper.getApkPath());
+                apkSignInfo.setKeystorePath(loadMultiSignWrapper.getkeystorePath());
+                apkSignInfo.setAliasString(loadMultiSignWrapper.getaliasString());
+                apkSignInfo.setEmptyFileString(loadMultiSignWrapper.getEmpmtyFileString());
+                apkSignInfo.setKeystorePwd(loadMultiSignWrapper.getkeystorePwd());
+                apkSignInfo.setChannelPath(loadMultiSignWrapper.getChannelPath());
+                controller.setSecondSignInfoText(apkSignInfo
+                );
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void gotoMultiHome() {
         try {
             replaceSceneContent("/resources/multi_sign_tool_home.fxml");
             loadMultiSignWrapper = loadPersonDataFromFile(new File("multi_sign_info.xml"));
@@ -55,7 +100,7 @@ public class Main extends Application {
                 apkSignInfo.setApkPath(loadMultiSignWrapper.getApkPath());
                 apkSignInfo.setKeystorePath(loadMultiSignWrapper.getkeystorePath());
                 apkSignInfo.setAliasString(loadMultiSignWrapper.getaliasString());
-                apkSignInfo.setEmpmtyFileString(loadMultiSignWrapper.getEmpmtyFileString());
+                apkSignInfo.setEmptyFileString(loadMultiSignWrapper.getEmpmtyFileString());
                 apkSignInfo.setKeystorePwd(loadMultiSignWrapper.getkeystorePwd());
                 apkSignInfo.setChannelPath(loadMultiSignWrapper.getChannelPath());
                 controller.setSignInfoText(apkSignInfo
@@ -66,17 +111,6 @@ public class Main extends Application {
         }
     }
 
-    private void gotoLogin() {
-        try {
-            replaceSceneContent("/resources/multi_sign_tool_login.fxml");
-            loadMultiSignWrapper = loadPersonDataFromFile(new File("multi_sign_info.xml"));
-            if (loadMultiSignWrapper != null && controller != null) {
-                controller.setUserInfoText(loadMultiSignWrapper.getUserName(), loadMultiSignWrapper.getUserPwd());
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     private Parent replaceSceneContent(String fxml) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
@@ -85,7 +119,7 @@ public class Main extends Application {
         //Parent page = FXMLLoader.load(getClass().getResource(fxml));
         Scene scene = singleStage.getScene();
         if (scene == null) {
-            scene = new Scene(page, 650, 500);
+            scene = new Scene(page, 800, 500);
             //scene.getStylesheets().add(getClass().getResource("demo.css").toExternalForm());
             singleStage.setScene(scene);
         } else {
@@ -96,37 +130,20 @@ public class Main extends Application {
     }
 
     /**
-     * 判断用户名是否合法
-     *
-     * @param userId
-     * @param password
-     * @return
-     */
-    public boolean userVerify(String userId, String password) {
-        if (userId.contains(".com")) {
-            loadMultiSignWrapper.setUserName(userId);
-            loadMultiSignWrapper.setUserPwd(password);
-            savePersonDataToFile(new File("multi_sign_info.xml"));
-            gotoHome();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * 本地序列化签名信息
      *
      * @param apkSignInfo
      */
     public void saveApkSignInfo(ApkSignInfo apkSignInfo) {
-        loadMultiSignWrapper.setApkPath(apkSignInfo.getApkPath());
-        loadMultiSignWrapper.setChannelPath(apkSignInfo.getChannelPath());
-        loadMultiSignWrapper.setkeystorePath(apkSignInfo.getKeystorePath());
-        loadMultiSignWrapper.setaliasString(apkSignInfo.getAliasString());
-        loadMultiSignWrapper.setkeystorePwd(apkSignInfo.getKeystorePwd());
-        loadMultiSignWrapper.setEmpmtyFileString(apkSignInfo.getEmpmtyFileString());
-        savePersonDataToFile(new File("multi_sign_info.xml"));
+        if (loadMultiSignWrapper != null) {
+            loadMultiSignWrapper.setApkPath(apkSignInfo.getApkPath());
+            loadMultiSignWrapper.setChannelPath(apkSignInfo.getChannelPath());
+            loadMultiSignWrapper.setkeystorePath(apkSignInfo.getKeystorePath());
+            loadMultiSignWrapper.setaliasString(apkSignInfo.getAliasString());
+            loadMultiSignWrapper.setkeystorePwd(apkSignInfo.getKeystorePwd());
+            loadMultiSignWrapper.setEmpmtyFileString(apkSignInfo.getEmptyFileString());
+            savePersonDataToFile(new File("multi_sign_info.xml"));
+        }
     }
 
     public static void main(String[] args) {

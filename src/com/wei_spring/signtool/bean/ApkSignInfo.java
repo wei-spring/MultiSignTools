@@ -1,13 +1,13 @@
-package com.edaixi.signtool.bean;
+package com.wei_spring.signtool.bean;
 
 /**
- * Created by wei_spring on 2016/12/25.
+ * Created by wei_spring on 2020/12/25.
  */
 public class ApkSignInfo {
     private String apkPath;
     private String channelPath;
     private String keystorePath;
-    private String empmtyFileString;
+    private String emptyFileString = "channel_";
     private String aliasString;
     private String keystorePwd;
 
@@ -35,12 +35,12 @@ public class ApkSignInfo {
         this.keystorePath = keystorePath;
     }
 
-    public String getEmpmtyFileString() {
-        return empmtyFileString;
+    public String getEmptyFileString() {
+        return emptyFileString;
     }
 
-    public void setEmpmtyFileString(String empmtyFileString) {
-        this.empmtyFileString = empmtyFileString;
+    public void setEmptyFileString(String emptyFileString) {
+        this.emptyFileString = emptyFileString;
     }
 
     public String getAliasString() {
@@ -57,5 +57,17 @@ public class ApkSignInfo {
 
     public void setKeystorePwd(String keystorePwd) {
         this.keystorePwd = keystorePwd;
+    }
+
+    @Override
+    public String toString() {
+        return "ApkSignInfo{" +
+                "apkPath='" + apkPath + '\'' +
+                ", channelPath='" + channelPath + '\'' +
+                ", keystorePath='" + keystorePath + '\'' +
+                ", empmtyFileString='" + emptyFileString + '\'' +
+                ", aliasString='" + aliasString + '\'' +
+                ", keystorePwd='" + keystorePwd + '\'' +
+                '}';
     }
 }

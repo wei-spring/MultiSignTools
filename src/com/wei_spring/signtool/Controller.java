@@ -1,6 +1,6 @@
-package com.edaixi.signtool;
+package com.wei_spring.signtool;
 
-import com.edaixi.signtool.bean.ApkSignInfo;
+import com.wei_spring.signtool.bean.ApkSignInfo;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,10 +8,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-
 
 import java.io.*;
 import java.net.URI;
@@ -23,55 +20,47 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**
- * This is the controller file for handling the mouse and keyboard input.
- */
-
 public class Controller {
 
     @FXML
-    private GridPane homeRoot;
-    @FXML
-    private TextField userNameField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
     private ProgressBar progressBar;
     @FXML
-    private Text tipsTarget;
+    private ProgressBar progressBarS;
     @FXML
     private ListView listLog;
     @FXML
+    private ListView listLogS;
+    @FXML
     private TextField apkFileDir;
+    @FXML
+    private TextField apkFileDirS;
     @FXML
     private TextField channelFileDir;
     @FXML
     private TextField keystoreDir;
     @FXML
+    private TextField keystoreDirS;
+    @FXML
     private TextField aliasName;
+    @FXML
+    private TextField aliasNameS;
     @FXML
     private PasswordField keystorePWD;
     @FXML
-    private TextField emptyFileName;
+    private PasswordField keystorePWDS;
     @FXML
     private ChoiceBox channelChoiceBox;
 
     public static final ObservableList showListLog =
             FXCollections.observableArrayList();
+
+    public static final ObservableList showListLogS =
+            FXCollections.observableArrayList();
+
     final FileChooser fileChooser = new FileChooser();
 
     /**
-     * 设置默认的用户名密码
-     */
-    public void setUserInfoText(String userName, String userPwd) {
-        if (userName != null && userNameField != null) {
-            userNameField.setText(userName);
-            passwordField.setText(userPwd);
-        }
-    }
-
-    /**
-     * 设置默认的签名信息
+     * 设置默认的多渠道签名信息
      */
     public void setSignInfoText(ApkSignInfo apkSignInfo) {
         if (apkSignInfo != null && apkFileDir != null) {
@@ -80,16 +69,26 @@ public class Controller {
             keystoreDir.setText(apkSignInfo.getKeystorePath());
             aliasName.setText(apkSignInfo.getAliasString());
             keystorePWD.setText(apkSignInfo.getKeystorePwd());
-            emptyFileName.setText(apkSignInfo.getEmpmtyFileString());
+        }
+    }
+
+    /**
+     * 设置默认的二次签名信息
+     */
+    public void setSecondSignInfoText(ApkSignInfo apkSignInfo) {
+        if (apkSignInfo != null && apkFileDir != null) {
+            apkFileDir.setText(apkSignInfo.getApkPath());
+            keystoreDir.setText(apkSignInfo.getKeystorePath());
+            aliasName.setText(apkSignInfo.getAliasString());
+            keystorePWD.setText(apkSignInfo.getKeystorePwd());
         }
     }
 
     @FXML
-    protected void handleSubmitButtonAction(ActionEvent event) {
-        boolean isReal = Main.getInstance().userVerify(userNameField.getText(), passwordField.getText());
-        if (!isReal) {
-            AlertUtil.showAlert("温馨提示", "", "用户名不正确,请联系e袋洗技术小伙伴~.~");
-        }
+    protected void handleFaqButtonAction(ActionEvent event) {
+        AlertUtil.showAlert("提示", "关于签名使用的apksigner.jar说明", "apksigner.jar使用的是\n" +
+                "Android/sdk/build-tools/29.0.0\n下面的，如果和签名APK对应版本不匹配，可以clone项目，替换apksigner.jar，" +
+                "再执行签名，当然，不替换也能签名成功");
     }
 
     @FXML
@@ -99,6 +98,18 @@ public class Controller {
         File file = fileChooser.showOpenDialog(Main.getInstance().singleStage);
         if (file != null && file.getPath().endsWith(".apk")) {
             apkFileDir.setText(file.getPath());
+        } else {
+            AlertUtil.showAlert("温馨提示", "", "选择出错啦,请手动输入Apk的目录.");
+        }
+    }
+
+    @FXML
+    protected void selectApkFilePathS(ActionEvent event) {
+        fileChooser.getExtensionFilters().removeAll();
+        configureFileChooser(fileChooser, "选择Apk目录", "apkPath", "*.apk");
+        File file = fileChooser.showOpenDialog(Main.getInstance().singleStage);
+        if (file != null && file.getPath().endsWith(".apk")) {
+            apkFileDirS.setText(file.getPath());
         } else {
             AlertUtil.showAlert("温馨提示", "", "选择出错啦,请手动输入Apk的目录.");
         }
@@ -128,45 +139,52 @@ public class Controller {
         }
     }
 
+    @FXML
+    protected void selectKeyStoreFilePathS(ActionEvent event) {
+        fileChooser.getExtensionFilters().removeAll();
+        configureFileChooser(fileChooser, "选择Keystore目录", "keystorePath", "*");
+        File file = fileChooser.showOpenDialog(Main.getInstance().singleStage);
+        if (file != null) {
+            keystoreDirS.setText(file.getPath());
+        } else {
+            AlertUtil.showAlert("温馨提示", "", "选择出错啦,请手动输入keystore的目录.");
+        }
+    }
+
     private static void configureFileChooser(final FileChooser fileChooser, String title
             , String descStr, String filterStr) {
         fileChooser.setTitle(title);
 //        fileChooser.setInitialDirectory(
 //                new File(System.getProperty("user.home"))
 //        );
-        if (filterStr != null && !filterStr.isEmpty())
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter(descStr, filterStr)
-            );
+//        if (filterStr != null && !filterStr.isEmpty()) {
+//            fileChooser.getExtensionFilters().add(
+//                    new FileChooser.ExtensionFilter(descStr, filterStr)
+//            );
+//        }
     }
 
     @FXML
     protected void handleSignButtonAction(ActionEvent event) {
-
         String apkFileDirString = apkFileDir.getText();
         String channelFileDirString = channelFileDir.getText();
         String keystoreDirString = keystoreDir.getText();
         String aliasNameString = aliasName.getText();
         String keystorePWDString = keystorePWD.getText();
-        String emptyFileNameString = emptyFileName.getText();
-
         if (apkFileDirString == null || apkFileDirString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "APK安装包路径不能为空.");
+            AlertUtil.showAlert("⚠️", "", "APK安装包路径不能为空.");
             return;
         } else if (channelFileDirString == null || channelFileDirString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "渠道文件路径不能为空.");
+            AlertUtil.showAlert("⚠️", "", "渠道文件路径不能为空.");
             return;
         } else if (keystoreDirString == null || keystoreDirString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "keyStore文件路径不能为空.");
+            AlertUtil.showAlert("⚠️", "", "keyStore文件路径不能为空.");
             return;
         } else if (aliasNameString == null || aliasNameString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "Alias不能为空.");
+            AlertUtil.showAlert("⚠️", "", "Alias不能为空.");
             return;
         } else if (keystorePWDString == null || keystorePWDString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "keyStore密码不能为空.");
-            return;
-        } else if (emptyFileNameString == null || emptyFileNameString.length() < 2) {
-            AlertUtil.showAlert("温馨提示", "", "标识渠道文件前缀不能为空.");
+            AlertUtil.showAlert("⚠️", "", "keyStore密码不能为空.");
             return;
         }
         ApkSignInfo apkSignInfo = new ApkSignInfo();
@@ -176,7 +194,6 @@ public class Controller {
             apkSignInfo.setKeystorePath(keystoreDirString);
             apkSignInfo.setAliasString(aliasNameString);
             apkSignInfo.setKeystorePwd(keystorePWDString);
-            apkSignInfo.setEmpmtyFileString(emptyFileNameString);
             Main.getInstance().saveApkSignInfo(apkSignInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,12 +204,89 @@ public class Controller {
         channelApkSign(apkSignInfo);
     }
 
+    @FXML
+    protected void handleSecondSignButtonAction(ActionEvent event) {
+        String apkFileDirString = apkFileDirS.getText();
+        String keystoreDirString = keystoreDirS.getText();
+        String aliasNameString = aliasNameS.getText();
+        String keystorePWDString = keystorePWDS.getText();
+
+        if (apkFileDirString == null || apkFileDirString.length() < 2) {
+            AlertUtil.showAlert("⚠️", "", "APK安装包路径不能为空.");
+            return;
+        } else if (keystoreDirString == null || keystoreDirString.length() < 2) {
+            AlertUtil.showAlert("⚠️", "", "keyStore文件路径不能为空.");
+            return;
+        } else if (aliasNameString == null || aliasNameString.length() < 2) {
+            AlertUtil.showAlert("⚠️", "", "Alias不能为空.");
+            return;
+        } else if (keystorePWDString == null || keystorePWDString.length() < 2) {
+            AlertUtil.showAlert("⚠️", "", "keyStore密码不能为空.");
+            return;
+        }
+        ApkSignInfo apkSignInfo = new ApkSignInfo();
+        try {
+            apkSignInfo.setApkPath(apkFileDirString);
+            apkSignInfo.setKeystorePath(keystoreDirString);
+            apkSignInfo.setAliasString(aliasNameString);
+            apkSignInfo.setKeystorePwd(keystorePWDString);
+            Main.getInstance().saveApkSignInfo(apkSignInfo);
+            System.err.println("Sign apkSignInfo:" + apkSignInfo.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (showListLogS.size() > 1) showListLog.removeAll();
+        showListLogS.add("开始💪\n");
+        setTipsS(showListLogS);
+        apkSign(apkSignInfo);
+    }
+
     /**
+     * 重新签名
+     */
+    public void apkSign(ApkSignInfo apkSignInfo) {
+        try {
+            String[] lists = (System.getProperty("os.name").contains("Windows")) ? apkSignInfo.getApkPath().split(File.separator + File.separator) : apkSignInfo.getApkPath().split(File.separator);
+            String apkName = lists[lists.length - 1];
+            showListLogS.add("执行二次签名: " + apkName.replace(".apk", "") + ".apk\n");
+            signApk(apkSignInfo.getKeystorePath(), apkSignInfo.getAliasString(), apkSignInfo.getKeystorePwd(), apkSignInfo.getApkPath());
+            showListLogS.add("执行结束: " + apkName.replace(".apk", "") + ".apk 签名完毕.\n");
+            showListLogS.add("结束💪\n");
+            setTipsS(showListLogS);
+            progressBarS.setProgress(100);
+            // color the bar green when the work is complete.
+            progressBarS.progressProperty().addListener(observable -> {
+                if (progressBarS.getProgress() >= 1 - 0.0000005) {
+                    progressBarS.setStyle("-fx-accent: forestgreen;");
+
+                }
+            });
+            //展示打包存储位置
+            String path = new File(apkSignInfo.getApkPath()).getParent();
+            showOpenDialog(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.showAlert("错误提示", "", "执行出错啦,请检查输入是否正确,确认输入无误后再重试.");
+            return;
+        }
+    }
+
+    /**
+     * ¬
      * 设置小提示
      */
     public void setTips(ObservableList showListLog) {
         if (showListLog != null && showListLog.size() > 1) {
             listLog.setItems(showListLog);
+        }
+    }
+
+    /**
+     * 设置小提示
+     */
+    public void setTipsS(ObservableList showListLog) {
+        if (showListLog != null && showListLog.size() > 1) {
+            listLogS.setItems(showListLog);
         }
     }
 
@@ -204,7 +298,7 @@ public class Controller {
             File apkFile = new File(apkSignInfo.getApkPath());
             String[] lists = (System.getProperty("os.name").contains("Windows")) ? apkSignInfo.getApkPath().split(File.separator + File.separator) : apkSignInfo.getApkPath().split(File.separator);
             String apkName = lists[lists.length - 1];
-            List<String> channelList = readFileByLines(apkSignInfo.getChannelPath());
+            List<String> channelList = readFileByLines(apkSignInfo);
             String outputPath = makeOutputFile(apkSignInfo.getApkPath());
             if (outputPath != null && channelList != null) {
                 Logger.getLogger(Controller.class.getName()).log(Level.INFO, "channelList:" + channelList.size(), "");
@@ -219,7 +313,7 @@ public class Controller {
                             File channelApkFile = new File(outputPath + File.separator + apkName.replace(".apk", "") + "_" + channerStr + ".apk");
                             try {
                                 Files.copy(apkFile.toPath(), channelApkFile.toPath());
-                                addChannelFile(channelApkFile.getPath(), channerStr, apkSignInfo.getEmpmtyFileString());
+                                addChannelFile(channelApkFile.getPath(), channerStr, apkSignInfo.getEmptyFileString());
                             } catch (IOException e) {
                             }
                             //执行重新签名逻辑
@@ -341,7 +435,7 @@ public class Controller {
                 sb.append(line).append("\n");
             }
             String result = sb.toString();
-            System.out.println("result:" + result);
+            System.out.println("result" + result);
         } catch (Exception e) {
             e.printStackTrace();
             AlertUtil.showAlert("错误提示", "", "\nerror:" + "出错啦,请截图联系开发:\n" + e.toString());
@@ -413,8 +507,13 @@ public class Controller {
     /**
      * 读取渠道文件内容,按行展示
      */
-    private List<String> readFileByLines(String fileName) {
+    private List<String> readFileByLines(ApkSignInfo apkSignInfo) {
         List<String> channelList = new ArrayList<>();
+        if (channelChoiceBox.getValue().equals("单个渠道")) {
+            channelList.add(channelFileDir.getText());
+            return channelList;
+        }
+        String fileName = apkSignInfo.getChannelPath();
         if (fileName.contains("/") || fileName.contains(File.separator) || fileName.contains("\\")) {
             BufferedReader reader = null;
             try {
