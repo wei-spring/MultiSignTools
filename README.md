@@ -1,3 +1,6 @@
+
+<img src="https://github.com/wei-spring/MultiSignTools/raw/master/src/resources/logo.png" alt="Logo">
+
 # MultiSignTools
 
 > MultiSignTools是Android APK二次签名和打多渠道包签名的一个可视化小工具。支持Android 7.0+ 签名只支持常见的keystore签名，如果需要证书等信息时候，需要支持certificate参数，可以clone源码，自行修改.
