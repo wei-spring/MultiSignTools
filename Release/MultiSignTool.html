@@ -3,7 +3,7 @@
 <script>
     function launchApplication(jnlpfile) {
         dtjava.launch(            {
-                url : 'JavaFXApp.jnlp'
+                url : 'MultiSignTool.jnlp'
             },
             {
                 javafx : '8.0+'
@@ -15,14 +15,14 @@
 </script>
 
 <script>
-    function javafxEmbedJavaFXApp_id() {
+    function javafxEmbedMultiSignTool_id() {
         dtjava.embed(
             {
-                id : 'JavaFXApp_id',
-                url : 'JavaFXApp.jnlp',
+                id : 'MultiSignTool_id',
+                url : 'MultiSignTool.jnlp',
                 placeholder : 'javafx-app-placeholder',
-                width : '700',
-                height : '450'
+                width : '800',
+                height : '530'
             },
             {
                 javafx : '8.0+'
@@ -31,12 +31,12 @@
         );
     }
     <!-- Embed FX application into web page once page is loaded -->
-    dtjava.addOnloadCallback(javafxEmbedJavaFXApp_id);
+    dtjava.addOnloadCallback(javafxEmbedMultiSignTool_id);
 </script>
 
 </head><body>
 <h2>Test page for <b>MultiSignTool</b></h2>
-  <b>Webstart:</b> <a href='JavaFXApp.jnlp' onclick="return launchApplication('JavaFXApp.jnlp');">click to launch this app as webstart</a><br><hr><br>
+  <b>Webstart:</b> <a href='MultiSignTool.jnlp' onclick="return launchApplication('MultiSignTool.jnlp');">click to launch this app as webstart</a><br><hr><br>
 
   <!-- Applet will be inserted here -->
   <div id='javafx-app-placeholder'></div>

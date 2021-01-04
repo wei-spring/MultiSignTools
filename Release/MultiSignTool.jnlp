@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MultiSignTool.jnlp">
+  <information>
+    <title>MultiSignTool</title>
+    <vendor>魏春生</vendor>
+    <description>APK二次签名工具和多渠道打包,支持v1和v2签名.</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MultiSignTool.jar" size="52927" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="800" height="530" main-class="com.wei_spring.signtool.Main"  name="MultiSignTool" />
+  <update check="background"/>
+</jnlp>

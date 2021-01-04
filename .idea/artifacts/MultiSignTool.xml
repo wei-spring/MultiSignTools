@@ -1,23 +1,24 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" name="MultiSignTool">
-    <output-path>$PROJECT_DIR$/out/artifacts/MultiSignTool</output-path>
-    <properties id="javafx-properties">
-      <options>
-        <option name="appClass" value="com.edaixi.signtool.Main" />
-        <option name="description" value="e袋洗多渠道打包签名工具,支持v1和v2签名." />
-        <option name="height" value="450" />
-        <option name="htmlParamFile" value="" />
-        <option name="nativeBundle" value="all" />
-        <option name="paramFile" value="" />
-        <option name="title" value="e袋洗多渠道打包签名工具" />
-        <option name="vendor" value="魏春生" />
-        <option name="width" value="700" />
-      </options>
-    </properties>
-    <root id="root">
-      <element id="archive" name="JavaFXApp.jar">
-        <element id="module-output" name="MultiSignTool" />
-      </element>
-    </root>
-  </artifact>
+    <artifact type="javafx" name="MultiSignTool">
+        <output-path>$PROJECT_DIR$/out/artifacts/MultiSignTool</output-path>
+        <properties id="javafx-properties">
+            <options>
+                <option name="appClass" value="com.wei_spring.signtool.Main"/>
+                <option name="description" value="APK二次签名工具和多渠道打包,支持v1和v2签名."/>
+                <option name="height" value="530"/>
+                <option name="htmlParamFile" value=""/>
+                <option name="nativeBundle" value="all"/>
+                <option name="paramFile" value=""/>
+                <option name="title" value="MultiSignTool"/>
+                <option name="vendor" value="魏春生"/>
+                <option name="version" value="1.0.0"/>
+                <option name="width" value="800"/>
+            </options>
+        </properties>
+        <root id="root">
+            <element id="archive" name="MultiSignTool.jar">
+                <element id="module-output" name="MultiSignTool"/>
+            </element>
+        </root>
+    </artifact>
 </component>
