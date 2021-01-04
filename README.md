@@ -34,8 +34,8 @@
 
 Mac & Windows:
 
-<img src="/img/multiTools_1_mac.png" width="600" height="330" />
+<img src="/img/multiTools_1_mac.png" width="887" height="673" />
 
-<img src="/img/multiTools_2_mac.png" width="600" height="330" />
+<img src="/img/multiTools_2_mac.png" width="874" height="609" />
 
-<img src="/img/multiTools_3_mac.jpg" width="600" height="330" />
+<img src="/img/multiTools_3_mac.jpg" width="853" height="612" />

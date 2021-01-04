@@ -60,7 +60,7 @@ gradle.properties
 
 .idea/gradle.xml
 
-.idea/gradle.xml
+.idea/
 
 .idea/misc.xml
 out/
